@@ -1,13 +1,16 @@
 from flask import Flask, send_from_directory, jsonify, render_template_string
 from app.extensions import db, ma, cache, limiter
-from app.config import DevelopmentConfig
+from app.config import DevelopmentConfig, ProductionConfig
 from app.blueprints import register_blueprints
 import os
 
 
-def create_app():
+def create_app(config_name=None):
     app = Flask(__name__)
-    app.config.from_object(DevelopmentConfig)
+    if config_name == 'ProductionConfig':
+        app.config.from_object(ProductionConfig)
+    else:
+        app.config.from_object(DevelopmentConfig)
     db.init_app(app)
     ma.init_app(app)
     cache.init_app(app)
