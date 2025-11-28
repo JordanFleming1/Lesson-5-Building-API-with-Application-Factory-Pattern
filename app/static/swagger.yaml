@@ -1,0 +1,246 @@
+swagger: '2.0'
+info:
+  title: "Library & Service Management API"
+  description: |
+    A robust, production-ready REST API for managing library and service resources, including members, books, loans, mechanics, service tickets, inventory, and user authentication.
+    
+    - Modular endpoints for all resources
+    - JWT authentication for secure access
+    - Designed for scalability and integration
+    - Follows OpenAPI/Swagger best practices
+  version: "1.0.0"
+  contact:
+    name: "API Support"
+    email: "support@example.com"
+  license:
+    name: "MIT"
+    url: "https://opensource.org/licenses/MIT"
+host: "localhost:5000"
+schemes:
+  - "http"
+  - "https"
+basePath: "/"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+tags:
+  - name: "Authentication"
+    description: "User login and token management"
+  - name: "Members"
+    description: "Library members management"
+  - name: "Books"
+    description: "Books catalog management"
+  - name: "Loans"
+    description: "Loan records management"
+  - name: "Mechanics"
+    description: "Mechanics management"
+  - name: "ServiceTickets"
+    description: "Service tickets management"
+  - name: "Inventory"
+    description: "Inventory items management"
+securityDefinitions:
+  bearerAuth:
+    type: apiKey
+    name: Authorization
+    in: header
+security:
+  - bearerAuth: []
+paths:
+  /login:
+    post:
+      tags:
+        - Authentication
+      summary: "User login to obtain JWT token"
+      description: "Authenticate user and return a JWT access token."
+      parameters:
+        - in: body
+          name: credentials
+          required: true
+          schema:
+            $ref: '#/definitions/LoginCredentials'
+      responses:
+        200:
+          description: "Successful login, returns JWT token."
+          schema:
+            $ref: '#/definitions/LoginResponse'
+        401:
+          description: "Invalid credentials."
+  /members:
+    post:
+      tags:
+        - Members
+      summary: "Create/register a new member"
+      description: "Create a new member in the Library system. Emails must be unique."
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Information required to create a new Member."
+          required: true
+          schema:
+            $ref: "#/definitions/CreateMemberPayload"
+      responses:
+        201:
+          description: "Successful Member Creation"
+          schema:
+            $ref: "#/definitions/CreateMemberResponse"
+          examples:
+            application/json:
+              id: 1
+              name: John Doe
+              DOB: "1900-01-01"
+              email: johnd@email.com
+              password: password123
+    get:
+      tags:
+        - Members
+      summary: "Returns all Members"
+      description: "Retrieve a list of all members."
+      responses:
+        200:
+          description: "Retrieved Members Successfully"
+          schema:
+            $ref: "#/definitions/AllMembers"
+    put:
+      tags:
+        - Members
+      summary: "Update a member"
+      description: "Update a member. Requires JWT token."
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Information required to update a Member."
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateMemberPayload"
+      responses:
+        200:
+          description: "Successfully Updated member"
+          schema:
+            $ref: "#/definitions/UpdateMemberResponse"
+          examples:
+            application/json:
+              id: 1
+              name: Dohn Joe
+              DOB: "1900-01-01"
+              email: dohnj@email.com
+              password: password123
+    delete:
+      tags:
+        - Members
+      summary: "Delete a member"
+      description: "Delete a member. Requires JWT token."
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "Successfully Deleted member"
+          schema:
+            $ref: "#/definitions/DeleteMemberResponse"
+          examples:
+            application/json:
+              message: "successfully deleted user <member_id>."
+definitions:
+  LoginCredentials:
+    type: object
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: string
+        format: email
+        example: "user@example.com"
+      password:
+        type: string
+        format: password
+        example: "yourPassword123"
+  LoginResponse:
+    type: object
+    properties:
+      token:
+        type: string
+        description: JWT access token
+        example: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+  CreateMemberPayload:
+    type: object
+    properties:
+      name:
+        type: string
+      email:
+        type: string
+      DOB:
+        type: string
+        format: date
+      password:
+        type: string
+    required:
+      - name
+      - email
+      - DOB
+      - password
+  CreateMemberResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      email:
+        type: string
+      DOB:
+        type: string
+      password:
+        type: string
+  AllMembers:
+    type: array
+    items:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        DOB:
+          type: string
+        password:
+          type: string
+  UpdateMemberPayload:
+    type: object
+    properties:
+      name:
+        type: string
+      email:
+        type: string
+      DOB:
+        type: string
+        format: date
+      password:
+        type: string
+    required:
+      - name
+      - email
+      - DOB
+      - password
+  UpdateMemberResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      email:
+        type: string
+      DOB:
+        type: string
+      password:
+        type: string
+  DeleteMemberResponse:
+    type: object
+    properties:
+      message:
+        type: string
