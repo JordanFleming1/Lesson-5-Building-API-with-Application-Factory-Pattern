@@ -1,9 +1,10 @@
+import os
 import jwt
 from datetime import datetime, timedelta
 from flask import request, jsonify
 from functools import wraps
 
-SECRET_KEY = 'your-secret-key'  # Use a secure, environment-based value in production
+SECRET_KEY = os.environ.get('SECRET_KEY') or "super secret secrets"
 ALGORITHM = 'HS256'
 
 # Expires in 1 hour by default
