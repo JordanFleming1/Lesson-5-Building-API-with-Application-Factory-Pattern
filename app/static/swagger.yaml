@@ -15,9 +15,8 @@ info:
   license:
     name: "MIT"
     url: "https://opensource.org/licenses/MIT"
-host: "localhost:5000"
+host: "lesson-5-building-api-with-application-factory-pattern.onrender.com"
 schemes:
-  - "http"
   - "https"
 basePath: "/"
 consumes:
